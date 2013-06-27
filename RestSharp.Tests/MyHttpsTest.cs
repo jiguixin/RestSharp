@@ -52,6 +52,11 @@ namespace RestSharp.Tests
         [Test]
         public void HttpsTest()
         {
+
+            GetLoginPage();
+
+            return;
+
             string url = "http://member.banggo.com/Member/index.shtml";
 
             var request = new RestRequest(Method.POST);
@@ -110,6 +115,110 @@ namespace RestSharp.Tests
             response = client.Execute(request); 
 
             Console.WriteLine(response.Content);
+             
+        }
+
+        private void GetLoginPage()
+        {
+
+            string url =
+                "https://passport.banggo.com/CASServer/login?service=http%3A%2F%2Fact.banggo.com%2FUser%2Flogin.shtml%3Freturn_url%3Dhttp%3A%2F%2Fmember.banggo.com%2FMember%2Findex.shtml";
+
+            var request = new RestRequest(Method.GET);
+            var client = new RestClient(url);
+            request.AddHeader("Host", "passport.banggo.com");
+            request.AddHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31");
+            request.AddHeader("Referer", "http://www.banggo.com/");
+            request.AddHeader("Accept-Encoding", "gzip,deflate,sdch");
+            request.AddHeader("Accept-Language", "zh-CN,zh;q=0.8"); 
+            request.AddHeader("Accept-Charset", "GBK,utf-8;q=0.7,*;q=0.3");
+            client.CookieContainer = new CookieContainer();
+
+//            client.ClientCertificates = new System.Security.Cryptography.X509Certificates.X509CertificateCollection();
+//
+//            client.ClientCertificates.Add(new System.Security.Cryptography.X509Certificates.X509Certificate(@"C:\Users\Administrator\Desktop\bg.cer"));
+//
+//            ServicePointManager.ServerCertificateValidationCallback +=
+//        (sender, certificate, chain, sslPolicyErrors) => true;
+
+            var response = client.Execute(request); 
+
+            client =
+                new RestClient("https://passport.banggo.com/CASServer/login?service=http%3A%2F%2Fact.banggo.com%2FUser%2Flogin%3Freturn_url%3Dhttp%3A%2F%2Fmember.banggo.com%2FMember%2Findex.shtml");
+            request = new RestRequest(Method.POST);
+            request.AddHeader("Host", "passport.banggo.com");
+             request.AddHeader("Cache-Control", "max-age=0");
+            request.AddHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            request.AddHeader("Origin", "https://passport.banggo.com");
+            request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31"); 
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded"); 
+            request.AddHeader("Referer", "https://passport.banggo.com/CASServer/login?service=http%3A%2F%2Fact.banggo.com%2FUser%2Flogin%3Freturn_url%3Dhttp%3A%2F%2Fmember.banggo.com%2FMember%2Findex.shtml");
+            request.AddHeader("Accept-Encoding", "gzip,deflate,sdch");
+            request.AddHeader("Accept-Language", "zh-CN,zh;q=0.8");
+            request.AddHeader("Accept-Charset", "GBK,utf-8;q=0.7,*;q=0.3");
+            client.CookieContainer = new CookieContainer();
+
+//            client.ClientCertificates = new System.Security.Cryptography.X509Certificates.X509CertificateCollection();
+//
+//            client.ClientCertificates.Add(new System.Security.Cryptography.X509Certificates.X509Certificate(@"C:\Users\Administrator\Desktop\bg.cer"));
+//
+//            ServicePointManager.ServerCertificateValidationCallback +=
+//        (sender, certificate, chain, sslPolicyErrors) => true;
+
+            var cookies1 = response.Cookies;
+
+            foreach (var restResponseCookie in response.Cookies)
+            {
+                request.AddCookie(restResponseCookie.Name, restResponseCookie.Value);
+            }
+
+            request.AddParameter("returnurl", "");
+            request.AddParameter("username", "张梅zm");
+            request.AddParameter("password", "zhangmei");
+            request.AddParameter("rememberUsername", "on");
+            request.AddParameter("lt", "e1s1");
+            request.AddParameter("_eventId", "submit");
+            request.AddParameter("loginType", "0");
+            request.AddParameter("lastIp", "171.221.114.139");
+             
+            response = client.Execute(request);
+
+            //Console.WriteLine(response.Content);
+
+            client =
+                new RestClient(string.Format("http://act.banggo.com/Ajax/sing_in/?callback=jsonp{0}",DateTime.Now.Ticks));
+             
+            request = new RestRequest(Method.GET);
+            request.AddHeader("Host", "act.banggo.com");
+            request.AddHeader("Accept", "*/*");
+            request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31");
+            request.AddHeader("Referer", "http://member.banggo.com/Member/index.shtml");
+            request.AddHeader("Accept-Encoding", "gzip,deflate,sdch");
+            request.AddHeader("Accept-Language", "zh-CN,zh;q=0.8");
+            request.AddHeader("Accept-Charset", "GBK,utf-8;q=0.7,*;q=0.3");
+
+            client.CookieContainer = new CookieContainer();
+
+            foreach (var restResponseCookie in response.Cookies)
+            {
+                request.AddCookie(restResponseCookie.Name, restResponseCookie.Value);
+            }
+
+            foreach (var restResponseCookie in cookies1)
+            {
+                request.AddCookie(restResponseCookie.Name, restResponseCookie.Value); 
+            }
+
+            //todo：能登录，便获取不到Cookie
+            request.AddCookie("bg_user_id", "%22%5Cu5f20%5Cu6885zm%22");
+
+            response = client.Execute(request);
+              
+            Console.WriteLine(response.Content);
+
+
+            
              
         }
 
